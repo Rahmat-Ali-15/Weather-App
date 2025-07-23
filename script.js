@@ -18,14 +18,14 @@ searchbtn.addEventListener("click", () => {
 
     let api = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${api_key}&units=metric`;
 
-    whetherData(api);
+    weatherData(api);
 
     // Clear the input field after searching
     searchInput.value = "";
 })
 
 
-const whetherData = async (api) => {
+const weatherData = async (api) => {
     try {
         let res = await fetch(api);
         let data = await res.json();
@@ -35,17 +35,18 @@ const whetherData = async (api) => {
     }
 }
 
-const appendData = (data) => {
-    let infoDiv = document.querySelector(".whether-info");
-    infoDiv.innerHTML = "";
-    let time = document.querySelector("#time");
-    // time.innerHTML = "";
+// <=============== Appending data ================>
 
-    let t = document.createElement("p");
-    t.innerText = moment().format('LT');
+const appendData = (data) => {
+    let infoDiv = document.querySelector(".weather-info");
+    infoDiv.innerHTML = "";
+
+    //  Update date
+
+    document.querySelector("#current_date").innerText = moment().format('MMMM Do YYYY,dddd');
 
     let temp = document.createElement("p");
-    temp.classList.add("temp")
+    temp.classList.add("temp");
 
     let cityName = document.createElement("p");
     cityName.classList.add("city-name");
@@ -53,10 +54,10 @@ const appendData = (data) => {
     temp.innerHTML = `${data.main.temp}<sup>&deg;</sup>C`;
     cityName.innerText = data.name;
 
-    time.append(t)
     infoDiv.append(temp, cityName);
 };
 
+// <============ Finding Current location ===============>
 
 function getLocation() {
     navigator.geolocation.getCurrentPosition(success);
@@ -68,12 +69,12 @@ function getLocation() {
         // console.log(`Latitude: ${crd.latitude}`);
         // console.log(`longitude: ${crd.longitude}`);
         // console.log(`More or Less ${crd.accuracy} meters`);
-        get_whether_by_location(crd.latitude, crd.longitude);
+        get_weather_by_location(crd.latitude, crd.longitude);
 
     }
 }
 
-const get_whether_by_location = async (lat, lon) => {
+const get_weather_by_location = async (lat, lon) => {
     const api = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}&units=metric`;
 
     try {
@@ -85,15 +86,50 @@ const get_whether_by_location = async (lat, lon) => {
     }
 }
 
+// <============= Updateing time ==============>
+
+function updateTimes() {
+    document.querySelector("#curTime").innerText = moment().format('LT');
+    document.querySelector("#before_3").innerText = moment().subtract(3, 'hours').format('LT');
+    document.querySelector("#before_6").innerText = moment().subtract(6, 'hours').format('LT');
+    document.querySelector("#before_9").innerText = moment().subtract(9, 'hours').format('LT');
+}
+
+
+// <============= getting Past temp data ==============>
+
+
+const  getPastTempData = async (cityName) => {
+    let pastTempApi = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${api_key}&units=metric`;
+
+    try {
+        let res = await fetch(pastTempApi);
+        let pastData = await res.json();
+        console.log(pastData)
+    } catch (error) {
+        console.log(error, "pasttData data")
+    }
+}
+getPastTempData("Mumbai");
+
+// <============= Appending past temp data ==============>
+
+const appnedPastTemp = () => {
+    
+}
+
+
+
+
+
 
 
 window.onload = () => {
     if (lastCity) {
         let api = `https://api.openweathermap.org/data/2.5/weather?q=${lastCity}&appid=${api_key}&units=metric`;
-        whetherData(api);
+        weatherData(api);
     }
-    getLocation()
+    getLocation();
+    updateTimes();
+    setInterval(updateTimes, moment().format('LT'));
 };
-
-let time = moment().format('LT');
-console.log(time);
