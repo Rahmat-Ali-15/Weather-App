@@ -6,22 +6,26 @@ let searchbtn = document.querySelector(".fa-magnifying-glass")
 searchbtn.addEventListener("click", () => {
 
     // getting input  value when we click on the seacrh icon(fa-magnifying-glass)
-    let searchInput = document.getElementById("search").value.trim();
+    let searchInput = document.getElementById("search");
+    let location = searchInput.value.trim();
 
-    if(!searchInput){
+    if (!location) {
         alert("Please Enter a city name");
         return;
     }
 
-     localStorage.setItem("lastCity", searchInput);
+    localStorage.setItem("lastCity", location);
 
-    let api = `https://api.openweathermap.org/data/2.5/weather?q=${searchInput}&appid=${api_key}&units=metric`;
+    let api = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${api_key}&units=metric`;
 
     whetherData(api);
+
+    // Clear the input field after searching
+    searchInput.value = "";
 })
 
 
-const whetherData = async(api) => {
+const whetherData = async (api) => {
     try {
         let res = await fetch(api);
         let data = await res.json();
@@ -31,33 +35,17 @@ const whetherData = async(api) => {
     }
 }
 
-// const appendData = (data) => {
-//     let infoDiv = document.querySelector(".whether-info");
-//     infoDiv.innerHTML = "";
-
-//         let temp = document.createElement("p");
-//         temp.classList.add("temp")
-
-//         let cityName = document.createElement("p");
-//         cityName.classList.add("city-name")
-
-//         temp.innerHTML = `${data.main.temp}<sup>&deg;</sup>C`;
-//         cityName.innerText= data.name;
-
-//         infoDiv.append(temp,cityName);
-// };
-
-// We'll store the last displayed weather info
-let lastCityName = "";
-let lastTemp = "";
-
-// Modify your appendData function to store values
 const appendData = (data) => {
     let infoDiv = document.querySelector(".whether-info");
     infoDiv.innerHTML = "";
+    let time = document.querySelector("#time");
+    // time.innerHTML = "";
+
+    let t = document.createElement("p");
+    t.innerText = moment().format('LT');
 
     let temp = document.createElement("p");
-    temp.classList.add("temp");
+    temp.classList.add("temp")
 
     let cityName = document.createElement("p");
     cityName.classList.add("city-name");
@@ -65,38 +53,37 @@ const appendData = (data) => {
     temp.innerHTML = `${data.main.temp}<sup>&deg;</sup>C`;
     cityName.innerText = data.name;
 
+    time.append(t)
     infoDiv.append(temp, cityName);
-
-    // Store values for sharing later
-    lastCityName = data.name;
-    lastTemp = `${data.main.temp}°C`;
 };
 
-// Handle sharing
-const shareBtn = document.getElementById("shareBtn");
-shareBtn.addEventListener("click", async () => {
-    if (!lastCityName) {
-        alert("Search for a city first to share its weather!");
-        return;
-    }
 
-    const shareData = {
-        title: "Weather Info",
-        text: `Current weather in ${lastCityName}: ${lastTemp}`,
-        url: window.location.href  // current page URL
-    };
+function getLocation() {
+    navigator.geolocation.getCurrentPosition(success);
 
-    if (navigator.share) {
-        try {
-            await navigator.share(shareData);
-            console.log("Shared successfully");
-        } catch (err) {
-            console.log("Share failed:", err);
-        }
-    } else {
-        alert("Sharing is not supported in this browser.");
+    function success(pos) {
+        const crd = pos.coords;
+
+        // console.log("Your current position is:");
+        // console.log(`Latitude: ${crd.latitude}`);
+        // console.log(`longitude: ${crd.longitude}`);
+        // console.log(`More or Less ${crd.accuracy} meters`);
+        get_whether_by_location(crd.latitude, crd.longitude);
+
     }
-});
+}
+
+const get_whether_by_location = async (lat, lon) => {
+    const api = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}&units=metric`;
+
+    try {
+        let res = await fetch(api);
+        let val = await res.json();
+        appendData(val)
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
 
@@ -105,4 +92,8 @@ window.onload = () => {
         let api = `https://api.openweathermap.org/data/2.5/weather?q=${lastCity}&appid=${api_key}&units=metric`;
         whetherData(api);
     }
+    getLocation()
 };
+
+let time = moment().format('LT');
+console.log(time);
