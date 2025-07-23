@@ -1,0 +1,125 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: monospace;
+}
+body{
+    width: 100%;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #9b78dd;
+    
+}
+.whether-container{
+    height: 100%;
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    border-radius: 20px;
+    background: linear-gradient(#3c3884,#8b4bac);
+}
+.search-container{
+    display: flex;
+    gap: 15px;
+}
+.search-container input{
+    width: 800px;
+    height: 50px;
+    padding: 10px 10px 10px 20px;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    border-radius: 50px;
+    background-color: rgb(211, 220, 236);
+    /* box-shadow: 2px 2px 2px black,-2px -2px 2px black,-2px 2px 2px black,2px -2px 2px black; */
+}
+.search-icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.search-icon div{
+    height: 45px;
+    width: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border-radius: 50%;
+    background-color: #a5a9a8;
+}
+.fa-magnifying-glass,.fa-location-arrow{
+    font-size: 20px;
+    padding: auto;
+    color: white;
+    cursor: pointer;
+}
+.cloud{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.cloud img{
+    height: 300px;
+}
+.whether-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.temp,.city-name{
+    font-size: 46px;
+    color: white;
+}
+.city-name{
+    font-size: 32px;
+}
+.prev-whether{
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-size: 18px;
+}
+.prev-whether .up{
+    width: 50%;
+    padding: 7px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.5);
+}
+.prev-whether .bottom{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.prev-whether .bottom div{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.prev-whether .bottom div img{
+    height: 100px;
+}
