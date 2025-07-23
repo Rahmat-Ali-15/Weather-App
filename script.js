@@ -14,16 +14,18 @@ searchbtn.addEventListener("click", () => {
         return;
     }
 
-    localStorage.setItem("lastCity", location);
+    // Saving last searched city in ls
+    // localStorage.setItem("lastCity", location);
 
     let api = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${api_key}&units=metric`;
 
     weatherData(api);
 
+    getForecastTempData(location);
+
     // Clear the input field after searching
     searchInput.value = "";
 })
-
 
 const weatherData = async (api) => {
     try {
@@ -86,49 +88,50 @@ const get_weather_by_location = async (lat, lon) => {
     }
 }
 
-// <============= Updateing time ==============>
-
-function updateTimes() {
-    document.querySelector("#curTime").innerText = moment().format('LT');
-    document.querySelector("#before_3").innerText = moment().subtract(3, 'hours').format('LT');
-    document.querySelector("#before_6").innerText = moment().subtract(6, 'hours').format('LT');
-    document.querySelector("#before_9").innerText = moment().subtract(9, 'hours').format('LT');
-}
-
-
 // <============= getting Past temp data ==============>
 
-
-const  getPastTempData = async (cityName) => {
-    let pastTempApi = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${api_key}&units=metric`;
+const getForecastTempData = async (cityName) => {
+    let forecastTempApi = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${api_key}&units=metric`;
 
     try {
-        let res = await fetch(pastTempApi);
-        let pastData = await res.json();
-        console.log(pastData)
+        let res = await fetch(forecastTempApi);
+        let forcasteData = await res.json();
+        console.log(forcasteData);
+        appendForecastTemp(forcasteData);
     } catch (error) {
-        console.log(error, "pasttData data")
+        console.log(error, "forcasteData data")
     }
 }
-getPastTempData("Mumbai");
+getForecastTempData("Mumbai");
 
 // <============= Appending past temp data ==============>
 
-const appnedPastTemp = () => {
-    
+const appendForecastTemp = (forecastData) => {
+    document.querySelector("#next_3_hrs_temp").innerHTML = `${forecastData.list[0].main.temp}<sup>&deg;</sup>C`;
+
+    document.querySelector("#next_6_hrs_temp").innerHTML = `${forecastData.list[1].main.temp}<sup>&deg;</sup>C`;
+
+    document.querySelector("#next_9_hrs_temp").innerHTML = `${forecastData.list[2].main.temp}<sup>&deg;</sup>C`;
+
+    document.querySelector("#next_12_hrs_temp").innerHTML = `${forecastData.list[3].main.temp}<sup>&deg;</sup>C`;
+
 }
 
 
+// <============= Updateing time ==============>
 
-
-
-
+function updateTimes() {
+    document.querySelector("#after_3_hrs_time").innerText = moment().add(3, 'hours').format('LT');
+    document.querySelector("#after_6_hrs_time").innerText = moment().add(6, 'hours').format('LT');
+    document.querySelector("#after_9_hrs_time").innerText = moment().add(9, 'hours').format('LT');
+    document.querySelector("#after_12_hrs_time").innerText = moment().add(12, 'hours').format('LT');
+}
 
 window.onload = () => {
-    if (lastCity) {
-        let api = `https://api.openweathermap.org/data/2.5/weather?q=${lastCity}&appid=${api_key}&units=metric`;
-        weatherData(api);
-    }
+    // if (lastCity) {
+    //     let api = `https://api.openweathermap.org/data/2.5/weather?q=${lastCity}&appid=${api_key}&units=metric`;
+    //     weatherData(api);
+    // }
     getLocation();
     updateTimes();
     setInterval(updateTimes, moment().format('LT'));
